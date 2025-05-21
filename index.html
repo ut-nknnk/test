@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ポーカー オープンポジション クイズ (40bb) - 統合版</title>
+    <title>ポーカー オープンポジション クイズ (40bb) - カード表示版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -47,12 +47,13 @@
                 padding: 2rem;
             }
         }
+        /* Updated .card-display style */
         .card-display {
-            font-weight: 700;
-            font-size: 2.8rem;
-            color: #facc15; /* Tailwind yellow-400 for card display */
             margin-bottom: 1.5rem;
-            min-height: 3.5rem;
+            min-height: 7rem; /* Accommodate card height (h-24 is 6rem) + padding */
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .btn-action {
             transition: all 0.2s ease-in-out;
@@ -63,52 +64,41 @@
             border-radius: 0.5rem;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
             font-size: 0.875rem;
-            min-width: 55px; 
-        }
+            min-width: 55px;
+         }
         .btn-action:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
         }
-
         /* Position Button and Chart Cell Styles */
         .pos-utg, .btn-pos-utg { background-color: #dc2626; border-color: #b91c1c; color: white; } /* Red */
         .pos-utg:hover:not(:disabled), .btn-pos-utg:hover:not(:disabled) { background-color: #b91c1c; }
-
         .pos-utgplus1, .btn-pos-utgplus1 { background-color: #f97316; border-color: #ea580c; color: white; } /* Orange */
         .pos-utgplus1:hover:not(:disabled), .btn-pos-utgplus1:hover:not(:disabled) { background-color: #ea580c; }
-
         .pos-mp, .btn-pos-mp { background-color: #eab308; border-color: #ca8a04; color: #1a202c; } /* Yellow */
         .pos-mp:hover:not(:disabled), .btn-pos-mp:hover:not(:disabled) { background-color: #ca8a04; }
-
         .pos-hj, .btn-pos-hj { background-color: #22c55e; border-color: #16a34a; color: white; } /* Green */
         .pos-hj:hover:not(:disabled), .btn-pos-hj:hover:not(:disabled) { background-color: #16a34a; }
-
         .pos-co, .btn-pos-co { background-color: #0ea5e9; border-color: #0284c7; color: white; } /* Sky Blue */
         .pos-co:hover:not(:disabled), .btn-pos-co:hover:not(:disabled) { background-color: #0284c7; }
-
         .pos-btn, .btn-pos-btn { background-color: #a855f7; border-color: #9333ea; color: white; } /* Purple */
         .pos-btn:hover:not(:disabled), .btn-pos-btn:hover:not(:disabled) { background-color: #9333ea; }
-
         .pos-fold, .btn-pos-fold { background-color: #6b7280; border-color: #4b5563; color: white; } /* Gray */
         .pos-fold:hover:not(:disabled), .btn-pos-fold:hover:not(:disabled) { background-color: #4b5563; }
-        
         .btn-reset { background-color: #facc15; border-color: #eab308; color: #1f2937; } /* Yellow */
         .btn-reset:hover:not(:disabled) { background-color: #d69e2e; }
-
         .btn-reveal-all {
-            background-color: #4b5563; 
-            border-color: #374151; 
+            background-color: #4b5563;
+            border-color: #374151;
             color: white;
-            font-size: 0.75rem; 
-            padding: 0.4rem 0.6rem; 
-        }
+            font-size: 0.75rem;
+            padding: 0.4rem 0.6rem;
+         }
         .btn-reveal-all:hover:not(:disabled) { background-color: #374151; }
-
 
         .feedback-correct { color: #22c55e; } /* Green-500 */
         .feedback-incorrect { color: #ef4444; } /* Red-500 */
         .feedback-neutral { color: #3b82f6; } /* Blue-500 */
-
         .score-board {
             background-color: #4b5563; /* Tailwind gray-600 */
             padding: 1rem;
@@ -120,44 +110,43 @@
         .disabled-button { opacity: 0.5; cursor: not-allowed; }
         .next-hand-btn { background-color: #a855f7; border-color: #9333ea; color: white; font-weight: 700; } /* Using new BTN Purple */
         .next-hand-btn:hover:not(:disabled) { background-color: #9333ea; }
-
         /* Hand Range Chart Styles */
         #handRangeChartContainer {
             display: grid;
             grid-template-columns: repeat(13, minmax(0, 1fr));
-            gap: 2px; 
-            background-color: #2d3748; 
+            gap: 2px;
+            background-color: #2d3748;
             padding: 0.5rem;
             border-radius: 0.5rem;
             width: 100%;
-            aspect-ratio: 1 / 1; 
+            aspect-ratio: 1 / 1;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            margin-bottom: 1rem; 
-        }
+            margin-bottom: 1rem;
+         }
         .hand-cell {
             display: flex;
             justify-content: center;
             align-items: center;
             background-color: #4a5568; /* Default for unanswered */
-            color: #e2e8f0; 
-            font-size: clamp(0.5rem, 2.2vw, 0.85rem); 
+            color: #e2e8f0;
+            font-size: clamp(0.5rem, 2.2vw, 0.85rem);
             font-weight: 600;
             border-radius: 0.25rem;
-            aspect-ratio: 1 / 1; 
+            aspect-ratio: 1 / 1;
             transition: background-color 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
-            cursor: pointer; 
-            border: 1px solid #2d3748; 
-        }
+            cursor: pointer;
+            border: 1px solid #2d3748;
+         }
         .hand-cell:hover {
-            border-color: #63b3ed; 
-        }
+            border-color: #63b3ed;
+         }
         .hand-cell.current-hand-highlight {
             animation: glow 1.2s infinite alternate;
             border: 2px solid #facc15; /* Tailwind yellow-400 */
         }
         .hand-cell.current-hand-highlight:hover {
-            border-color: #facc15; 
-        }
+            border-color: #facc15;
+         }
         @keyframes glow {
             from { box-shadow: 0 0 3px #facc15, 0 0 6px #facc15, 0 0 9px #eab308, 0 0 12px #eab308; }
             to { box-shadow: 0 0 6px #facc15, 0 0 9px #facc15, 0 0 12px #ca8a04, 0 0 15px #ca8a04; }
@@ -176,7 +165,7 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 0.5rem;
-            margin-top: 0.5rem; 
+            margin-top: 0.5rem;
             padding: 0.5rem;
             background-color: #2d3748;
             border-radius: 0.5rem;
@@ -196,7 +185,6 @@
             border-radius: 2px;
             border: 1px solid rgba(0,0,0,0.2);
         }
-
     </style>
 </head>
 <body class="flex flex-col items-center min-h-screen">
@@ -208,7 +196,7 @@
             <div class="quiz-panel-container">
                 <div id="handRangeChartContainer">
                     </div>
-                 <div id="legendContainer" class="legend">
+                <div id="legendContainer" class="legend">
                     </div>
             </div>
 
@@ -254,12 +242,9 @@
             FOLD: "FOLD"       // Gray
         };
 
-        // Define available actions for buttons
         const BUTTON_ACTIONS = [POSITIONS.UTG, POSITIONS.UTG1, POSITIONS.MP, POSITIONS.HJ, POSITIONS.CO, POSITIONS.BTN, POSITIONS.FOLD];
-        
         const AUTO_NEXT_DELAY = 700; // Milliseconds for auto-advancing after correct answer
 
-        // UTG 8-max 40bb ハンドレンジ (元のRAISE/FOLD定義)
         const originalHandChartUTG_RaiseFold = {
             "AA": "RAISE 2.3", "KK": "RAISE 2.3", "QQ": "RAISE 2.3", "JJ": "RAISE 2.3", "TT": "RAISE 2.3",
             "99": "RAISE 2.3", "88": "RAISE 2.3", "77": "RAISE 2.3", "66": "RAISE 2.3", "55": "RAISE 2.3",
@@ -308,7 +293,7 @@
             "32o": "FOLD"
         };
         const ranks = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2'];
-        
+
         const utg_opens = new Set(
             Object.keys(originalHandChartUTG_RaiseFold)
                   .filter(h => originalHandChartUTG_RaiseFold[h].startsWith("RAISE"))
@@ -325,26 +310,26 @@
             "T5s", "T4s","95s",  "84s", "74s","53s", "A3o", "A2o","K7o", "K6o", "K5o",
         ]);
 
-        const positionalHandChart = {}; 
+        const positionalHandChart = {};
         const all169Hands = [];
         for (let i = 0; i < ranks.length; i++) {
             for (let j = 0; j < ranks.length; j++) {
                 const r1 = ranks[i];
                 const r2 = ranks[j];
                 let hand;
-                if (i === j) { 
-                    hand = r1 + r2;
-                } else if (i < j) { 
-                    hand = r1 + r2 + 's';
-                } else { 
-                    hand = r2 + r1 + 'o';
+                if (i === j) {
+                     hand = r1 + r2;
+                } else if (i < j) {
+                     hand = r1 + r2 + 's';
+                } else {
+                     hand = r2 + r1 + 'o';
                 }
-                if (!all169Hands.includes(hand)) { 
-                    all169Hands.push(hand);
+                if (!all169Hands.includes(hand)) {
+                     all169Hands.push(hand);
                 }
             }
         }
-        
+
         all169Hands.forEach(hand => {
             if (utg_opens.has(hand)) {
                 positionalHandChart[hand] = POSITIONS.UTG;
@@ -359,19 +344,22 @@
             } else if (btn_opens_additional.has(hand)) {
                 positionalHandChart[hand] = POSITIONS.BTN;
             } else {
+                // Check if it's an UTG open that wasn't caught by the simple utg_opens set (if any edge cases)
+                // Or, more simply, if it's in originalHandChartUTG_RaiseFold and is a RAISE, it's UTG.
+                // Otherwise, it's a FOLD.
                 const utgAction = originalHandChartUTG_RaiseFold[hand];
                 if (utgAction && utgAction.startsWith("RAISE")) {
-                     positionalHandChart[hand] = POSITIONS.UTG;
+                     positionalHandChart[hand] = POSITIONS.UTG; // Should be covered by utg_opens but as a fallback
                 } else {
                      positionalHandChart[hand] = POSITIONS.FOLD;
                 }
             }
         });
-        
+
         const quizPool = [...all169Hands];
 
         const handRangeChartContainer = document.getElementById('handRangeChartContainer');
-        const handCellElements = {}; 
+        const handCellElements = {};
 
         function getHandCellClass(position) {
             switch (position) {
@@ -382,10 +370,10 @@
                 case POSITIONS.CO: return 'pos-co';
                 case POSITIONS.BTN: return 'pos-btn';
                 case POSITIONS.FOLD: return 'pos-fold';
-                default: return ''; 
+                default: return '';
             }
         }
-        
+
         function generateHandRangeChart() {
             handRangeChartContainer.innerHTML = '';
             for (let i = 0; i < ranks.length; i++) {
@@ -393,36 +381,34 @@
                     const r1 = ranks[i];
                     const r2 = ranks[j];
                     let hand;
-                    if (i === j) { 
-                        hand = r1 + r2;
-                    } else if (i < j) { 
-                        hand = r1 + r2 + 's';
-                    } else { 
-                        hand = r2 + r1 + 'o';
+                    if (i === j) {
+                         hand = r1 + r2;
+                    } else if (i < j) {
+                         hand = r1 + r2 + 's';
+                    } else {
+                         hand = r2 + r1 + 'o';
                     }
 
                     const cell = document.createElement('div');
                     cell.classList.add('hand-cell');
                     cell.textContent = hand;
-                    cell.dataset.hand = hand; 
+                    cell.dataset.hand = hand;
                     handCellElements[hand] = cell;
-                    
-                    // Mouse events for drag-to-reveal
+
                     cell.addEventListener('mousedown', (event) => {
-                        event.preventDefault(); 
+                        event.preventDefault();
                         quizInstance.isDragging = true;
-                        quizInstance.handleChartCellClick(hand); 
+                        quizInstance.handleChartCellClick(hand);
                         quizInstance.lastDraggedCell = cell;
                     });
-                    cell.addEventListener('mouseenter', (event) => { 
-                        if (quizInstance.isDragging) {
+                    cell.addEventListener('mouseenter', (event) => {
+                         if (quizInstance.isDragging) {
                             if (cell !== quizInstance.lastDraggedCell) {
                                 quizInstance.handleChartCellClick(hand);
                                 quizInstance.lastDraggedCell = cell;
                             }
                         }
                     });
-                    // Touch events for drag-to-reveal
                     cell.addEventListener('touchstart', (event) => {
                         event.preventDefault();
                         quizInstance.isDragging = true;
@@ -449,7 +435,7 @@
                 }
             }
         }
-        
+
         function generateLegend() {
             const legendContainer = document.getElementById('legendContainer');
             legendContainer.innerHTML = '';
@@ -457,26 +443,23 @@
             legendPositions.forEach(pos => {
                 const item = document.createElement('div');
                 item.classList.add('legend-item');
-                
                 const colorBox = document.createElement('div');
                 colorBox.classList.add('legend-color-box');
-                colorBox.classList.add(getHandCellClass(pos)); 
-                
+                colorBox.classList.add(getHandCellClass(pos));
                 const text = document.createElement('span');
                 text.textContent = pos;
-                
                 item.appendChild(colorBox);
                 item.appendChild(text);
                 legendContainer.appendChild(item);
             });
         }
 
-        let quizInstance = null; 
+        let quizInstance = null;
 
         class Quiz {
             constructor(initialHandPool) {
-                this.allHandsInPool = [...initialHandPool]; 
-                this.remainingHands = [...initialHandPool]; 
+                this.allHandsInPool = [...initialHandPool];
+                this.remainingHands = [...initialHandPool];
                 this.isDragging = false;
                 this.lastDraggedCell = null;
 
@@ -510,7 +493,7 @@
 
             initEventListeners() {
                 BUTTON_ACTIONS.forEach(action => {
-                    const buttonIdSuffix = action.replace('+', 'Plus'); 
+                    const buttonIdSuffix = action.replace('+', 'Plus');
                     const buttonElement = document.getElementById(`btn${buttonIdSuffix}`);
                     if (buttonElement) {
                         buttonElement.addEventListener('click', () => this.handleAction(action));
@@ -527,7 +510,6 @@
                 this.dom.resetButton.addEventListener('click', () => this.resetQuiz());
                 this.dom.revealAllButton.addEventListener('click', () => this.revealAllHands());
 
-                // Global mouseup/touchend listeners to stop dragging
                 document.addEventListener('mouseup', () => {
                     if (this.isDragging) {
                         this.isDragging = false;
@@ -541,10 +523,10 @@
                     }
                 });
             }
-            
+
             resetChartStyles() {
                 Object.values(handCellElements).forEach(cell => {
-                    cell.className = 'hand-cell'; 
+                    cell.className = 'hand-cell';
                 });
             }
 
@@ -567,17 +549,17 @@
                 this.totalAttempts++;
                 if (isCorrectAttempt) {
                     this.correctAnswers++;
-                    if (clickedHand === null || clickedHand === this.currentHand) { 
-                         this.currentStreak++;
+                    if (clickedHand === null || clickedHand === this.currentHand) {
+                          this.currentStreak++;
                     }
                 } else {
-                     if (clickedHand === null || clickedHand === this.currentHand) { 
-                        this.currentStreak = 0;
+                     if (clickedHand === null || clickedHand === this.currentHand) {
+                         this.currentStreak = 0;
                      }
                 }
                 this.updateScoreDisplay();
             }
-            
+
             highlightCurrentHandOnChart() {
                 const currentlyHighlighted = handRangeChartContainer.querySelector('.current-hand-highlight');
                 if (currentlyHighlighted) {
@@ -588,22 +570,91 @@
                 }
             }
 
+            // Method to generate HTML for card display
+            generateCardDisplayHTML(handString) {
+                if (!handString || handString.length < 2) return '--';
+
+                const rankSymbols = { 'A': 'A', 'K': 'K', 'Q': 'Q', 'J': 'J', 'T': '10' };
+                // Ranks '9' through '2' will use their own character
+
+                let r1 = handString[0];
+                let r2 = handString[1];
+                let type = handString.length > 2 ? handString[2] : ''; // 's', 'o', or empty for pair
+
+                let card1RankDisplay = rankSymbols[r1] || r1;
+                let card2RankDisplay = rankSymbols[r2] || r2;
+
+                let card1SuitChar, card2SuitChar;
+                let card1ColorClass, card2ColorClass;
+
+                const suitDetails = [
+                    { char: '♠', colorClass: 'text-gray-800' }, // Using gray-800 for better visibility on white
+                    { char: '♥', colorClass: 'text-red-600' },
+                    { char: '♦', colorClass: 'text-red-600' },
+                    { char: '♣', colorClass: 'text-gray-800' }
+                ];
+                
+                // Shuffle suits for variety in 's' and 'o' display
+                const shuffledSuitDetails = [...suitDetails].sort(() => 0.5 - Math.random());
+
+                if (r1 === r2) { // Pair
+                    card1SuitChar = shuffledSuitDetails[0].char;
+                    card1ColorClass = shuffledSuitDetails[0].colorClass;
+                    // Ensure the second suit is different for a pair for visual variety
+                    card2SuitChar = shuffledSuitDetails[1].char;
+                    card2ColorClass = shuffledSuitDetails[1].colorClass;
+                } else if (type === 's') { // Suited
+                    const chosenSuit = shuffledSuitDetails[0];
+                    card1SuitChar = chosenSuit.char;
+                    card2SuitChar = chosenSuit.char;
+                    card1ColorClass = chosenSuit.colorClass;
+                    card2ColorClass = chosenSuit.colorClass;
+                } else { // Offsuit (type === 'o' or implied)
+                    card1SuitChar = shuffledSuitDetails[0].char;
+                    card1ColorClass = shuffledSuitDetails[0].colorClass;
+                    card2SuitChar = shuffledSuitDetails[1].char; // Will be different from first
+                    card2ColorClass = shuffledSuitDetails[1].colorClass;
+                }
+
+                const cardBaseStyle = "inline-block bg-white rounded-md shadow-md mx-1 p-1 w-[4.5rem] h-[6rem] text-center relative"; // Adjusted size slightly
+                const rankStyle = "block text-3xl font-bold mt-3"; // Adjusted margin
+                const suitStyleTop = "block text-lg absolute top-1 left-1.5"; // Adjusted size & position
+                const suitStyleBottom = "block text-lg absolute bottom-1 right-1.5 transform rotate-180"; // Adjusted size & position
+
+                return `
+                    <div class="flex justify-center items-center">
+                        <div class="${cardBaseStyle}">
+                            <span class="${rankStyle} ${card1ColorClass}">${card1RankDisplay}</span>
+                            <span class="${suitStyleTop} ${card1ColorClass}">${card1SuitChar}</span>
+                            <span class="${suitStyleBottom} ${card1ColorClass}">${card1SuitChar}</span>
+                        </div>
+                        <div class="${cardBaseStyle}">
+                            <span class="${rankStyle} ${card2ColorClass}">${card2RankDisplay}</span>
+                            <span class="${suitStyleTop} ${card2ColorClass}">${card2SuitChar}</span>
+                            <span class="${suitStyleBottom} ${card2ColorClass}">${card2SuitChar}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
             displayNewHand() {
                 clearTimeout(this.autoNextTimeout);
-                
+
                 if (this.currentHand && handCellElements[this.currentHand] && !this.remainingHands.includes(this.currentHand)) {
-                    handCellElements[this.currentHand].classList.remove('current-hand-highlight');
+                    // Only remove highlight if it was for the hand that's now answered
+                    const cell = handCellElements[this.currentHand];
+                    if(cell) cell.classList.remove('current-hand-highlight');
                 }
 
                 this.currentHand = this.getRandomHand();
-                this.updateScoreDisplay(); 
-                this.highlightCurrentHandOnChart(); 
+                this.updateScoreDisplay();
+                this.highlightCurrentHandOnChart(); // Highlight new current hand
 
                 if (this.quizOver) return;
 
                 if (this.currentHand === null) {
                     this.quizOver = true;
-                    this.dom.handDisplay.textContent = "全問正解!";
+                    this.dom.handDisplay.innerHTML = '<span class="text-2xl text-yellow-400">全問正解!</span>';
                     this.dom.feedbackArea.textContent = "おめでとうございます！リセットして再挑戦できます。";
                     this.dom.feedbackArea.className = 'min-h-[3em] text-md font-semibold mb-4 feedback-correct';
                     this.dom.actionButtons.forEach(button => {
@@ -619,12 +670,13 @@
                 this.currentCorrectAction = positionalHandChart[this.currentHand];
                 if (typeof this.currentCorrectAction === 'undefined') {
                     console.error(`Error: Hand ${this.currentHand} has an undefined action.`);
-                    this.remainingHands = this.remainingHands.filter(h => h !== this.currentHand);
-                    this.displayNewHand(); 
+                    this.remainingHands = this.remainingHands.filter(h => h !== this.currentHand); // Remove problematic hand
+                    this.displayNewHand(); // Try to get another hand
                     return;
                 }
 
-                this.dom.handDisplay.textContent = this.currentHand;
+                this.dom.handDisplay.innerHTML = this.generateCardDisplayHTML(this.currentHand); // Use new card display
+
                 this.dom.feedbackArea.textContent = '';
                 this.dom.feedbackArea.className = 'min-h-[3em] text-md font-semibold mb-4';
                 this.dom.actionButtons.forEach(button => {
@@ -644,29 +696,29 @@
                 });
 
                 const isCorrect = chosenPosition === this.currentCorrectAction;
-                this.updateScoreState(isCorrect); 
+                this.updateScoreState(isCorrect);
 
                 const currentCell = handCellElements[this.currentHand];
                 if (currentCell) {
-                    currentCell.classList.remove('current-hand-highlight');
-                    currentCell.className = 'hand-cell'; 
-                    currentCell.classList.add(getHandCellClass(this.currentCorrectAction)); 
+                    currentCell.classList.remove('current-hand-highlight'); // Remove highlight after answering
+                    currentCell.className = 'hand-cell'; // Reset classes
+                    currentCell.classList.add(getHandCellClass(this.currentCorrectAction)); // Show correct action on chart
                 }
 
                 if (isCorrect) {
                     this.dom.feedbackArea.textContent = `正解！ ${this.currentHand} は ${this.currentCorrectAction}。`;
                     this.dom.feedbackArea.className = 'min-h-[3em] text-md font-semibold mb-4 feedback-correct';
-                    
+
                     const handIndex = this.remainingHands.indexOf(this.currentHand);
                     if (handIndex > -1) {
                         this.remainingHands.splice(handIndex, 1);
                     }
-                    this.updateScoreDisplay(); 
+                    this.updateScoreDisplay();
 
                     if (this.remainingHands.length === 0) {
-                        this.displayNewHand(); 
+                        this.displayNewHand(); // This will trigger the "All correct" message
                     } else {
-                         this.autoNextTimeout = setTimeout(() => {
+                        this.autoNextTimeout = setTimeout(() => {
                             this.displayNewHand();
                         }, AUTO_NEXT_DELAY);
                     }
@@ -681,41 +733,48 @@
                 if (this.quizOver) return;
 
                 const handIndexInRemaining = this.remainingHands.indexOf(hand);
-                if (handIndexInRemaining === -1) return; 
+                if (handIndexInRemaining === -1) return; // Already answered or revealed
 
                 const correctActionForClickedHand = positionalHandChart[hand];
                 const cell = handCellElements[hand];
 
-                cell.className = 'hand-cell'; 
-                cell.classList.add(getHandCellClass(correctActionForClickedHand));
-                
+                cell.className = 'hand-cell'; // Reset classes
+                cell.classList.add(getHandCellClass(correctActionForClickedHand)); // Show its correct action
+
                 this.remainingHands.splice(handIndexInRemaining, 1);
-                
+
                 if (hand === this.currentHand) {
-                    this.updateScoreState(true, hand); 
+                    // Clicked the current quiz hand on the chart
+                    this.updateScoreState(true, hand); // Correctly answered current hand
                     this.dom.feedbackArea.textContent = `正解！ ${this.currentHand} は ${correctActionForClickedHand} (チャートから選択)。`;
                     this.dom.feedbackArea.className = 'min-h-[3em] text-md font-semibold mb-4 feedback-correct';
-                    
+
                     this.dom.actionButtons.forEach(button => {
                         button.disabled = true;
                         button.classList.add('disabled-button');
                     });
                     clearTimeout(this.autoNextTimeout);
-                     if (this.remainingHands.length === 0) {
-                        this.displayNewHand(); 
+                    if (this.remainingHands.length === 0) {
+                        this.displayNewHand();
                     } else {
                         this.autoNextTimeout = setTimeout(() => {
                             this.displayNewHand();
                         }, AUTO_NEXT_DELAY);
                     }
                 } else {
-                    this.updateScoreState(true, hand); 
-                    this.updateScoreDisplay(); 
+                    // Clicked a different hand on the chart (revealing it)
+                    // This counts as a correct "reveal" for that hand, not affecting current streak for quiz hand.
+                    this.updateScoreState(true, hand); // Mark as correct for this specific hand
+                    this.updateScoreDisplay(); // Update score, remaining count
+                    // No feedback change here as it's not the main quiz hand
+                }
+                 if (cell.classList.contains('current-hand-highlight')) {
+                    cell.classList.remove('current-hand-highlight');
                 }
             }
-            
+
             revealAllHands() {
-                if (this.quizOver && this.remainingHands.length === 0) return; 
+                if (this.quizOver && this.remainingHands.length === 0) return;
                 clearTimeout(this.autoNextTimeout);
                 this.quizOver = true;
 
@@ -723,32 +782,42 @@
                     const correctAction = positionalHandChart[hand];
                     const cell = handCellElements[hand];
                     if (cell) {
-                        cell.className = 'hand-cell'; 
+                        cell.className = 'hand-cell';
                         cell.classList.add(getHandCellClass(correctAction));
                     }
+                    // Update score for hands that were remaining and are now revealed
                     const handIndexInRemaining = this.remainingHands.indexOf(hand);
                     if (handIndexInRemaining !== -1) {
-                        if (!cell.classList.contains('pos-utg') && 
-                            !cell.classList.contains('pos-utgplus1') &&
-                            !cell.classList.contains('pos-mp') &&
-                            !cell.classList.contains('pos-hj') &&
-                            !cell.classList.contains('pos-co') &&
-                            !cell.classList.contains('pos-btn') &&
-                            !cell.classList.contains('pos-fold')) {
-                            this.totalAttempts++;
-                            this.correctAnswers++;
+                         // Check if it wasn't already revealed by a click
+                        let alreadyRevealedByColor = false;
+                        POSITIONS_ARRAY = Object.values(POSITIONS);
+                        for(const pos_val of POSITIONS_ARRAY){
+                            if(cell.classList.contains(getHandCellClass(pos_val))){
+                                alreadyRevealedByColor = true;
+                                break;
+                            }
+                        }
+                        if(!alreadyRevealedByColor){
+                             // This logic for scoring on reveal all might be complex if we want to avoid double counting
+                             // For simplicity, reveal all just shows the chart. Score is based on direct answers.
                         }
                     }
                 });
                 
-                this.remainingHands = []; 
-                this.currentStreak = 0; 
+                // Score update for reveal all: Let's count all remaining hands as "attempted" and "correct" for simplicity of reveal.
+                // This might not be desired if "accuracy" should only reflect direct answers.
+                // For now, let's just clear remaining and update display.
+                // this.correctAnswers += this.remainingHands.length;
+                // this.totalAttempts += this.remainingHands.length;
+
+                this.remainingHands = [];
+                this.currentStreak = 0; // Streak ends on reveal all
                 this.updateScoreDisplay();
 
-                this.dom.handDisplay.textContent = "全解放済";
+                this.dom.handDisplay.innerHTML = '<span class="text-xl text-sky-300">全解放済</span>';
                 this.dom.feedbackArea.textContent = "全てのハンドが解放されました。リセットして再挑戦できます。";
                 this.dom.feedbackArea.className = 'min-h-[3em] text-md font-semibold mb-4 feedback-neutral';
-                
+
                 this.dom.actionButtons.forEach(button => {
                     button.disabled = true;
                     button.classList.add('disabled-button');
@@ -756,7 +825,7 @@
                 this.dom.nextHandButton.style.display = 'none';
                 const currentlyHighlighted = handRangeChartContainer.querySelector('.current-hand-highlight');
                 if (currentlyHighlighted) currentlyHighlighted.classList.remove('current-hand-highlight');
-                this.currentHand = null; 
+                this.currentHand = null;
             }
 
             resetQuiz() {
@@ -766,21 +835,22 @@
                 this.correctAnswers = 0;
                 this.totalAttempts = 0;
                 this.currentStreak = 0;
-                
-                this.resetChartStyles(); 
+
+                this.resetChartStyles(); // Clears colors from chart cells
                 this.updateScoreDisplay();
 
                 this.dom.feedbackArea.textContent = 'クイズがリセットされました。';
                 this.dom.feedbackArea.className = 'min-h-[3em] text-md font-semibold mb-4 feedback-neutral';
                 this.dom.actionButtons.forEach(button => {
-                    button.disabled = false; 
+                    button.disabled = false;
                     button.classList.remove('disabled-button');
                 });
                 this.dom.nextHandButton.style.display = 'none';
-                
-                this.autoNextTimeout = setTimeout(() => {
+                this.dom.handDisplay.innerHTML = '--'; // Reset hand display
+
+                this.autoNextTimeout = setTimeout(() => { // Delay before showing the first hand
                     this.displayNewHand();
-                }, 1000);
+                }, 500);
             }
         }
 
@@ -788,7 +858,7 @@
             generateHandRangeChart();
             generateLegend();
             if (quizPool.length > 0) {
-                quizInstance = new Quiz(quizPool); 
+                quizInstance = new Quiz(quizPool);
             } else {
                 const panel = document.getElementById('quizPanel');
                 if(panel) panel.innerHTML = '<p class="text-center text-yellow-400 p-4">クイズ対象のハンドがありません。</p>';
